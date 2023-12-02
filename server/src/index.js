@@ -2,26 +2,25 @@ const express = require('express');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const cors = require('cors');
-const mongoose = require('mongoose');
+const logs = require('./api/logs')
+
 require('dotenv').config({path: "./vars/.env"});
 
 const {notFound,errorHandler}= require('./middlewares')
 
-const app = express(cors({
+require('./db');
+
+const app= express();
+
+app.use(cors({
     origin:process.env.CORS_ORIGIN,
 }));
 
-mongoose.connect(process.env.DATABASE_URL,{
-    useNewUrlParser: true
-}).then( ()=>{
-    console.log("Db is connected!")
-}).
-catch( (err)=>{
-    console.log("Error found!",err)
-})
 
+app.use(express.json())
 
 app.use(helmet());
+
 app.use(morgan('common'));
 
 app.get('/', (req,res)=>{
@@ -29,6 +28,8 @@ app.get('/', (req,res)=>{
         message:"Hello World!",
     });
 });
+
+app.use('/api/logs',logs);
 
 app.use(notFound);
 
