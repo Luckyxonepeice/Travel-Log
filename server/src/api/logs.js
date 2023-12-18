@@ -17,7 +17,16 @@ route.post('/',async (req,res,next)=>{
     
     const data = req.body;
     try{
-        const log = new logSchema(data);
+        const log = new logSchema({
+            title: data.title,
+            rating: data.rating,
+            latitude: data.latitude,
+            longitude: data.longitude,
+            visitedDate: data.visitDate,
+            description: data.description,
+            comments:data.comments,
+            image:data.image,
+        });
         const createdEntry = await log.save();
         res.json(createdEntry);
     }catch(error){
